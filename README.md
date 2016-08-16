@@ -7,7 +7,7 @@
 [![Codebeat](https://codebeat.co/badges/a793ad97-47e3-40d9-82cf-2aafc516ef4e)](https://codebeat.co/projects/github-com-vapor-redis-provider)
 [![Slack Status](http://slack.vapor.io/badge.svg)](http://vapor.team)
 
-A Vapor provider for Redis database caching.
+A Vapor provider for Redis database caching. Read more about [Providers](https://vapor.github.io/documentation/guide/provider.html) in Vapor's [documentation](http://docs.vapor.codes).
 
 ## 🐦 Redbird
 
