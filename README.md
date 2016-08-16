@@ -5,7 +5,7 @@
 [![CircleCI](https://circleci.com/gh/vapor/redis-provider.svg?style=shield)](https://circleci.com/gh/vapor/redis-provider)
 [![Code Coverage](https://codecov.io/gh/vapor/redis-provider/branch/master/graph/badge.svg)](https://codecov.io/gh/vapor/redis-provider)
 [![Codebeat](https://codebeat.co/badges/a793ad97-47e3-40d9-82cf-2aafc516ef4e)](https://codebeat.co/projects/github-com-vapor-redis-provider)
-[![Slack Status](http://slack.vapor.io/badge.svg)](http://vapor.team)
+[![Slack Status](http://vapor.team/badge.svg)](http://vapor.team)
 
 A Vapor provider for Redis database caching. Read more about [Providers](https://vapor.github.io/documentation/guide/provider.html) in Vapor's [documentation](http://docs.vapor.codes).
 
