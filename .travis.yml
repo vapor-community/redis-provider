@@ -7,6 +7,8 @@ dist: trusty
 osx_image: xcode8
 services:
   - redis-server
+before_script:
+  - sudo redis-server
 script:
   - eval "$(curl -sL swift.vapor.sh/ci)"
   - eval "$(curl -sL swift.vapor.sh/codecov)"
