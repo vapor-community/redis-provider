@@ -27,19 +27,19 @@ public final class Provider: Vapor.Provider {
         automatically if passed as a Type to Vapor.
     */
     public convenience init(config: Config) throws {
-        guard let redis = config["redis"].object else {
+        guard let redis = config["redis"]?.object else {
             throw Error.invalidRedisConfig("No redis.json file.")
         }
 
-        guard let address = redis["address"].string else {
+        guard let address = redis["address"]?.string else {
             throw Error.invalidRedisConfig("No address.")
         }
 
-        guard let port = redis["port"].int else {
+        guard let port = redis["port"]?.int else {
             throw Error.invalidRedisConfig("No port.")
         }
 
-        let password = redis["password"].string
+        let password = redis["password"]?.string
 
         try self.init(address: address, port: port, password: password)
     }

@@ -1,5 +1,5 @@
 import XCTest
-@testable import VaporRedisTestSuite
+@testable import VaporRedisTests
 
 XCTMain([
      testCase(ProviderTests.allTests),
