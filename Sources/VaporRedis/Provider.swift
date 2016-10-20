@@ -6,19 +6,19 @@ import Redbird
     when added to a Droplet.
 */
 public final class Provider: Vapor.Provider {
-    public let provided: Providable
+    public var provided: Providable { return Providable(cache: cache) }
 
     public enum Error: Swift.Error {
         case invalidRedisConfig(String)
     }
 
+    private let cache: RedisCache
     /**
         Create the provider using manual, hard-coded
         configuration values.
     */
     public init(address: String, port: Int, password: String? = nil) throws {
-        let cache = try RedisCache(address: address, port: port, password: password)
-        provided = Providable(cache: cache)
+        cache = try RedisCache(address: address, port: port, password: password)
     }
 
     /**
@@ -44,6 +44,10 @@ public final class Provider: Vapor.Provider {
         try self.init(address: address, port: port, password: password)
     }
 
+    public func boot(_ droplet: Droplet) {
+        droplet.cache = cache
+    }
+
     public func afterInit(_ droplet: Droplet) {}
-    public func beforeServe(_ droplet: Droplet) {}
+    public func beforeRun(_ droplet: Droplet) {}
 }
