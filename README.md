@@ -15,15 +15,18 @@ Read more about [Providers](https://vapor.github.io/documentation/guide/provider
 
 This wrapper conforms Redbird to Vapor's `CacheProtocol`.
 
+## Installing Redis
+
+### Homebrew
+
+```sh
+brew install redis
+brew services start redis
+```
+
 ### Travis
 
 Travis builds Swift VaporRedis on both Ubuntu 14.04 and macOS 10.11. Check out the `.travis.yml` file to see how this package is built and compiled during testing.
-
-## 🌏 Environment
-
-|VaporRedis|Xcode|Swift|
-|:-:|:-:|:-:|
-|0.1.x|Xcode 8 beta **6**|DEVELOPMENT-SNAPSHOT-2016-07-25-a|
 
 ## 📖 Documentation
 
