@@ -24,6 +24,21 @@ brew install redis
 brew services start redis
 ```
 
+### Setup
+Add config
+```
+{
+    "address": "127.0.0.1",
+    "port": "6379"
+}
+```
+If password is required, the add "password": "secret" to the config
+
+Add the provider
+```
+try drop.addProvider(VaporRedis.Provider(config: drop.config))
+```
+
 ### Travis
 
 Travis builds Swift VaporRedis on both Ubuntu 14.04 and macOS 10.11. Check out the `.travis.yml` file to see how this package is built and compiled during testing.
