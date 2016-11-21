@@ -32,7 +32,7 @@ Add config
     "port": "6379"
 }
 ```
-If password is required, the add "password": "secret" to the config
+If password is required, then add "password": "secret" to the config
 
 Add the provider
 ```
