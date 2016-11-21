@@ -39,6 +39,11 @@ Add the provider
 try drop.addProvider(VaporRedis.Provider(config: drop.config))
 ```
 
+### Usage
+```
+try drop.cache.set("cacheKey", Node("test"))
+print(try drop.cache.get("cacheKey")) // Will print "test"
+```
 ### Travis
 
 Travis builds Swift VaporRedis on both Ubuntu 14.04 and macOS 10.11. Check out the `.travis.yml` file to see how this package is built and compiled during testing.
