@@ -5,7 +5,7 @@ class RedisCacheTests: XCTestCase {
     static let allTests = [
         ("testBasic", testBasic),
         ("testMissing", testMissing),
-        ("testNonCompatible", testNonCompatible),
+        ("testDict", testDict),
         ("testDelete", testDelete),
     ]
 
@@ -24,12 +24,13 @@ class RedisCacheTests: XCTestCase {
         XCTAssertEqual(try cache.get("not-here"), nil)
     }
 
-    func testNonCompatible() throws {
-        do {
-            try cache.set("array", [1])
-        } catch RedisCache.Error.incompatibleValue {
-            // good
-        }
+    func testDict() throws {
+        try cache.set("array", [1])
+        
+        let array = try cache.get("array")?.array
+        let value: Int = (array?[0].int) ?? 0
+        
+        XCTAssertEqual(value, 1)
     }
 
     func testDelete() throws {
