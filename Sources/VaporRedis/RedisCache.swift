@@ -51,7 +51,7 @@ public final class RedisCache: CacheProtocol {
             return nil
         }
             
-        return try JSON(bytes: result.bytes).makeNode()["data"]?.node
+        return try JSON(bytes: result.bytes).makeNode()["data"]
     }
     
     /**
