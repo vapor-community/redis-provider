@@ -8,6 +8,7 @@ osx_image: xcode8
 services:
   - redis-server
 before_script:
+  - redis-cli info
   - sudo redis-server
 script:
   - eval "$(curl -sL swift.vapor.sh/ci)"
