@@ -3,6 +3,7 @@ import Cache
 import Node
 import JSON
 import Core
+import Jay
 
 /**
  Uses an underlying Redbird
@@ -34,33 +35,32 @@ public final class RedisCache: CacheProtocol {
     }
     
     /**
-     Errors that can be thrown by the RedisCache.
-     Other errors from the underlying Redbird
-     instance can also be thrown.
-     */
-    public enum Error: Swift.Error {
-        case incompatibleValue
-    }
-    
-    /**
      Returns a key from the underlying Redbird
      instance by using the GET command.
+     Try to deserialize else return original
      */
    	public func get(_ key: String) throws -> Node? {
         guard let result = try redbird.command("GET", params: [key]).toMaybeString() else {
             return nil
         }
-            
-        return try JSON(bytes: result.bytes).makeNode()["data"]
+        
+        do {
+            return try JSON(bytes: result.bytes).makeNode()
+        } catch {
+            return Node.string(result)
+        }
     }
     
     /**
      Sets a key to the supplied value in the
      underlying Redbird instance using the
      SET command.
+     Serializing Node if not a string
      */
     public func set(_ key: String, _ value: Node) throws {
-        try redbird.command("SET", params: [key, JSON(node: Node(["data": value])).serialize().toString()])
+        let string = try value.string ?? JSON(node: Node(value)).serialize().toString()
+        
+        try redbird.command("SET", params: [key, string])
     }
     
     /**

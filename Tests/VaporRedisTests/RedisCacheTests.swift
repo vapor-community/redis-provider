@@ -1,12 +1,14 @@
 import XCTest
 @testable import VaporRedis
+@testable import Node
 
 class RedisCacheTests: XCTestCase {
     static let allTests = [
         ("testBasic", testBasic),
         ("testMissing", testMissing),
-        ("testDict", testDict),
-        ("testDelete", testDelete),
+        ("testArray", testArray),
+        ("testObject", testObject),
+        ("testDelete", testDelete)
     ]
 
     var cache: RedisCache!
@@ -24,13 +26,27 @@ class RedisCacheTests: XCTestCase {
         XCTAssertEqual(try cache.get("not-here"), nil)
     }
 
-    func testDict() throws {
+    func testArray() throws {
         try cache.set("array", [1])
         
         let array = try cache.get("array")?.array
         let value: Int = (array?[0].int) ?? 0
         
         XCTAssertEqual(value, 1)
+    }
+    
+    func testObject() throws {
+        try cache.set("object", Node([
+            "key0": "value0",
+            "key1": "value1"
+        ]))
+        
+        let node = try cache.get("object")?.node
+        let value0: String = (node?["key0"]?.string) ?? "wrong"
+        let value1: String = (node?["key1"]?.string) ?? "wrong"
+        
+        XCTAssertEqual(value0, "value0")
+        XCTAssertEqual(value1, "value1")
     }
 
     func testDelete() throws {
