@@ -3,7 +3,6 @@ import Cache
 import Node
 import JSON
 import Core
-import Jay
 
 /**
  Uses an underlying Redbird
