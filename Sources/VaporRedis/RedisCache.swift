@@ -38,7 +38,7 @@ public final class RedisCache: CacheProtocol {
      instance by using the GET command.
      Try to deserialize else return original
      */
-   	public func get(_ key: String) throws -> Node? {
+    public func get(_ key: String) throws -> Node? {
         guard let result = try redbird.command("GET", params: [key]).toMaybeString() else {
             return nil
         }
