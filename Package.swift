@@ -7,6 +7,6 @@ let package = Package(
         .Package(url: "https://github.com/vapor/redbird.git", majorVersion: 1),
 
         // Importing Vapor for access to the Provider protocol.
-        .Package(url: "https://github.com/vapor/vapor.git", Version(0,0,0))
+        .Package(url: "https://github.com/vapor/vapor.git", Version(2,0,0, prereleaseIdentifiers: ["alpha"]))
     ]
 )
