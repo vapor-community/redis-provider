@@ -3,6 +3,7 @@ import Cache
 import Node
 import JSON
 import Core
+import Foundation
 
 /**
  Uses an underlying Redbird
@@ -13,6 +14,8 @@ public final class RedisCache: CacheProtocol {
      The underlying Redbird instance.
      */
     public let redbird: Redbird
+
+    private let lock: NSLock
     
     /**
      Creates a RedisCache from the address,
@@ -30,6 +33,7 @@ public final class RedisCache: CacheProtocol {
      Create a new RedisCache from a Redbird.
      */
     public init(redbird: Redbird) {
+        lock = NSLock()
         self.redbird = redbird
     }
     
@@ -39,7 +43,19 @@ public final class RedisCache: CacheProtocol {
      Try to deserialize else return original
      */
     public func get(_ key: String) throws -> Node? {
-        guard let result = try redbird.command("GET", params: [key]).toMaybeString() else {
+        let resp: RespObject
+
+        lock.lock()
+        do {
+            resp = try redbird.command("GET", params: [key])
+        } catch {
+            lock.unlock()
+            throw error
+        }
+        lock.unlock()
+
+
+        guard let result = try resp.toMaybeString() else {
             return nil
         }
         
@@ -58,7 +74,8 @@ public final class RedisCache: CacheProtocol {
      */
     public func set(_ key: String, _ value: Node) throws {
         let string = try value.string ?? JSON(node: Node(value)).serialize().toString()
-        
+        lock.lock()
+        defer { lock.unlock() }
         try redbird.command("SET", params: [key, string])
     }
     
@@ -67,6 +84,8 @@ public final class RedisCache: CacheProtocol {
      instance using the DEL command.
      */
     public func delete(_ key: String) throws {
-        try redbird.command("DEL", params: [key])
+        lock.lock()
+        defer { lock.unlock() }
+            try redbird.command("DEL", params: [key])
     }
 }

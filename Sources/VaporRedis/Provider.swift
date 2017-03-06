@@ -1,5 +1,6 @@
 import Vapor
 import Redbird
+import Foundation
 
 /**
     Provides a RedisCache object to Vapor
@@ -13,6 +14,7 @@ public final class Provider: Vapor.Provider {
     }
 
     private let cache: RedisCache
+
     /**
         Create the provider using manual, hard-coded
         configuration values.
