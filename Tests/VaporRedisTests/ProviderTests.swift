@@ -15,7 +15,7 @@ class ProviderTests: XCTestCase {
         let drop = try Droplet()
 
         drop.cache = try RedisCache(
-            address: RedisCache.testAddress,
+            hostname: RedisCache.testAddress,
             port: RedisCache.testPort
         )
 
@@ -25,7 +25,7 @@ class ProviderTests: XCTestCase {
     func testConfig() throws {
         var config = Config([:])
         try config.set("droplet.cache", "redis")
-        try config.set("redis.address", RedisCache.testAddress)
+        try config.set("redis.hostname", RedisCache.testAddress)
         try config.set("redis.port", RedisCache.testPort)
 
         let drop = try Droplet(config: config)

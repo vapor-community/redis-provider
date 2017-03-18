@@ -1,50 +1,53 @@
-import Redbird
 import Cache
 import Node
 import JSON
 import Core
+import Transport
+
+public struct RedisContext: Context {}
 
 /// Uses an underlying Redbird
 /// instance to conform to the CacheProtocol.
 public final class RedisCache: CacheProtocol {
     /// The underlying Redbird instance.
-    public let redbird: Redbird
+    public let client: Redis.TCPClient
+    private let context: RedisContext
     
     /// Creates a RedisCache from the address,
     /// port, and password credentials.
     ///
     /// Password should be nil if not required.
-    public convenience init(address: String, port: Int, password: String? = nil) throws {
-        let config = RedbirdConfig(
-            address: address,
-            port: UInt16(port),
+    public convenience init(hostname: String, port: Port, password: String? = nil) throws {
+        let redbird = try Client(
+            hostname: hostname,
+            port: port,
             password: password
         )
-        let redbird = try Redbird(config: config)
-        self.init(redbird: redbird)
+        self.init(redbird)
     }
     
     /// Create a new RedisCache from a Redbird.
-    public init(redbird: Redbird) {
-        self.redbird = redbird
+    public init(_ client: Redis.TCPClient) {
+        self.client = client
+        self.context = RedisContext()
     }
     
     /// Returns a key from the underlying Redbird
     /// instance by using the GET command.
     /// Try to deserialize else return original
     public func get(_ key: String) throws -> Node? {
-        guard let result = try redbird
-            .command("GET", params: [key])
-            .toMaybeString()
+        guard let bytes = try client
+            .command(.get, [key])?
+            .bytes
         else {
             return nil
         }
         
         do {
-            return try JSON(bytes: result.makeBytes())
-                .makeNode()
+            return try JSON(bytes: bytes)
+                .makeNode(in: context)
         } catch {
-            return Node.string(result)
+            return Node.bytes(bytes)
         }
     }
     
@@ -53,17 +56,26 @@ public final class RedisCache: CacheProtocol {
     /// SET command.
     /// Serializing Node if not a string
     public func set(_ key: String, _ value: Node) throws {
-        let string = try value.string
-            ?? JSON(node: value)
-                .serialize()
-                .toString()
+        let bytes: Bytes
+        switch value.wrapped {
+        case .array, .object:
+            bytes = try JSON(value).serialize()
+        case .number(let number):
+            bytes = number.description.makeBytes()
+        default:
+            guard let b = value.bytes else {
+                throw RedisError.general("Unable to serialize value for key '\(key)'")
+            }
+            bytes = b
+        }
         
-        try redbird.command("SET", params: [key, string])
+        let key = key.makeBytes()
+        try client.command(.set, [key, bytes])
     }
     
     /// Deletes a key from the underlying Redbird
     /// instance using the DEL command.
     public func delete(_ key: String) throws {
-        try redbird.command("DEL", params: [key])
+        try client.command(.delete, [key])
     }
 }
