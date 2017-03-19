@@ -41,7 +41,7 @@ class RedisCacheTests: XCTestCase {
             "key1": "value1"
         ]))
         
-        let node = try cache.get("object")?.node
+        let node = try cache.get("object")
         let value0: String = (node?["key0"]?.string) ?? "wrong"
         let value1: String = (node?["key1"]?.string) ?? "wrong"
         

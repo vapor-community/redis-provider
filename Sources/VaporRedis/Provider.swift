@@ -1,5 +1,5 @@
 import Vapor
-import Redbird
+import Transport
 
 /// Provides a RedisCache object to Vapor
 /// when added to a Droplet.
@@ -19,28 +19,32 @@ extension RedisCache: ConfigInitializable {
             throw ConfigError.missingFile("redis")
         }
 
-        guard let address = redis["address"]?.string else {
+        guard let hostname = redis["hostname"]?.string else {
             throw ConfigError.missing(
-                key: ["address"],
+                key: ["hostname"],
                 file: "redis",
                 desiredType: String.self
             )
         }
 
-        guard let port = redis["port"]?.int else {
+        guard let port = redis["port"]?.int?.port else {
             throw ConfigError.missing(
                 key: ["port"],
                 file: "redis",
-                desiredType: Int.self
+                desiredType: Port.self
             )
         }
 
         let password = redis["password"]?.string
 
         try self.init(
-            address: address,
+            hostname: hostname,
             port: port,
             password: password
         )
+        
+        if let database = redis["database"]?.int {
+            try client.command(try Command("database"), [database.description])
+        }
     }
 }

@@ -1,9 +1,10 @@
 import VaporRedis
 import XCTest
+import Transport
 
 
 extension RedisCache {
-    static var testPort: Int {
+    static var testPort: Transport.Port {
         return 6379
     }
 
@@ -13,7 +14,7 @@ extension RedisCache {
 
     static func makeForTesting() -> RedisCache {
         do {
-            return try RedisCache(address: testAddress, port: testPort)
+            return try RedisCache(hostname: testAddress, port: testPort)
         } catch {
             print()
             print()
