@@ -44,7 +44,7 @@ extension RedisCache: ConfigInitializable {
         )
         
         if let database = redis["database"]?.int {
-            try client.command(try Command("database"), [database.description])
+            try makeClient().command(try Command("database"), [database.description])
         }
     }
 }

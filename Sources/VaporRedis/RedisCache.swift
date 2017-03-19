@@ -9,8 +9,8 @@ public struct RedisContext: Context {}
 /// Uses an underlying Redbird
 /// instance to conform to the CacheProtocol.
 public final class RedisCache: CacheProtocol {
-    /// The underlying Redbird instance.
-    public let client: Redis.TCPClient
+    public typealias ClientFactory = () throws -> Redis.TCPClient
+    public let makeClient: ClientFactory
     private let context: RedisContext
     
     /// Creates a RedisCache from the address,
@@ -18,17 +18,18 @@ public final class RedisCache: CacheProtocol {
     ///
     /// Password should be nil if not required.
     public convenience init(hostname: String, port: Port, password: String? = nil) throws {
-        let redbird = try Client(
-            hostname: hostname,
-            port: port,
-            password: password
-        )
-        self.init(redbird)
+        self.init {
+            return try Client(
+                hostname: hostname,
+                port: port,
+                password: password
+            )
+        }
     }
     
     /// Create a new RedisCache from a Redbird.
-    public init(_ client: Redis.TCPClient) {
-        self.client = client
+    public init(_ clientFactory: @escaping ClientFactory) {
+        makeClient = clientFactory
         self.context = RedisContext()
     }
     
@@ -36,7 +37,7 @@ public final class RedisCache: CacheProtocol {
     /// instance by using the GET command.
     /// Try to deserialize else return original
     public func get(_ key: String) throws -> Node? {
-        guard let bytes = try client
+        guard let bytes = try makeClient()
             .command(.get, [key])?
             .bytes
         else {
@@ -70,12 +71,12 @@ public final class RedisCache: CacheProtocol {
         }
         
         let key = key.makeBytes()
-        try client.command(.set, [key, bytes])
+        try makeClient().command(.set, [key, bytes])
     }
     
     /// Deletes a key from the underlying Redbird
     /// instance using the DEL command.
     public func delete(_ key: String) throws {
-        try client.command(.delete, [key])
+        try makeClient().command(.delete, [key])
     }
 }
