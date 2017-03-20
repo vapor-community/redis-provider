@@ -8,7 +8,8 @@ class RedisCacheTests: XCTestCase {
         ("testMissing", testMissing),
         ("testArray", testArray),
         ("testObject", testObject),
-        ("testDelete", testDelete)
+        ("testDelete", testDelete),
+        ("testExpire", testExpire)
     ]
 
     var cache: RedisCache!
@@ -50,9 +51,16 @@ class RedisCacheTests: XCTestCase {
     }
 
     func testDelete() throws {
-        try cache.set("ephemeral", 42)
+        try cache.set("hello", 42)
+        XCTAssertEqual(try cache.get("hello")?.string, "42")
+        try cache.delete("hello")
+        XCTAssertEqual(try cache.get("hello"), nil)
+    }
+    
+    func testExpire() throws {
+        try cache.set("ephemeral", 42, expiration: Date(timeIntervalSinceNow: 2))
         XCTAssertEqual(try cache.get("ephemeral")?.string, "42")
-        try cache.delete("ephemeral")
+        sleep(3)
         XCTAssertEqual(try cache.get("ephemeral"), nil)
     }
 }

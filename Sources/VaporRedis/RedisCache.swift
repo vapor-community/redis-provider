@@ -56,22 +56,23 @@ public final class RedisCache: CacheProtocol {
     /// underlying Redbird instance using the
     /// SET command.
     /// Serializing Node if not a string
-    public func set(_ key: String, _ value: Node) throws {
-        let bytes: Bytes
+    public func set(_ key: String, _ value: Node, expiration: Date?) throws {
+        let serialized: Bytes
         switch value.wrapped {
-        case .array, .object:
-            bytes = try JSON(value).serialize()
-        case .number(let number):
-            bytes = number.description.makeBytes()
+        case .string(let s):
+            serialized = s.makeBytes()
         default:
-            guard let b = value.bytes else {
-                throw RedisError.general("Unable to serialize value for key '\(key)'")
-            }
-            bytes = b
+            serialized = try JSON(value).serialize()
         }
         
         let key = key.makeBytes()
-        try makeClient().command(.set, [key, bytes])
+        let client = try makeClient()
+        
+        try client.command(.set, [key, serialized])
+        if let exp = expiration {
+            let time = Int(exp.timeIntervalSinceNow).description.makeBytes()
+            try client.command(Command("expire"), [key, time])
+        }
     }
     
     /// Deletes a key from the underlying Redbird
