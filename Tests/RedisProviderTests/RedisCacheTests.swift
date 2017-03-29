@@ -1,5 +1,5 @@
 import XCTest
-@testable import VaporRedis
+@testable import RedisProvider
 @testable import Node
 
 class RedisCacheTests: XCTestCase {

@@ -1,6 +1,6 @@
 import XCTest
 import Vapor
-@testable import VaporRedis
+@testable import RedisProvider
 import Cache
 
 class ProviderTests: XCTestCase {
@@ -29,7 +29,7 @@ class ProviderTests: XCTestCase {
         try config.set("redis.port", RedisCache.testPort)
 
         let drop = try Droplet(config: config)
-        try drop.addProvider(VaporRedis.Provider.self)
+        try drop.addProvider(RedisProvider.Provider.self)
 
         XCTAssert(drop.cache is RedisCache)
     }
@@ -40,7 +40,7 @@ class ProviderTests: XCTestCase {
 
         let drop = try Droplet(config: config)
         do {
-            try drop.addProvider(VaporRedis.Provider.self)
+            try drop.addProvider(RedisProvider.Provider.self)
             XCTFail("Should have failed.")
         } catch ConfigError.missingFile(let file) {
             XCTAssertEqual(file, "redis")
@@ -54,7 +54,7 @@ class ProviderTests: XCTestCase {
         try config.set("droplet.cache", "memory")
 
         let drop = try Droplet(config: config)
-        try drop.addProvider(VaporRedis.Provider.self)
+        try drop.addProvider(RedisProvider.Provider.self)
 
         XCTAssert(drop.cache is MemoryCache)
     }

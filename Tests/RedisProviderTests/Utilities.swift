@@ -1,4 +1,4 @@
-import VaporRedis
+import RedisProvider
 import XCTest
 import Transport
 
