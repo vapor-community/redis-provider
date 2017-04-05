@@ -1,5 +1,6 @@
 import Vapor
 import Transport
+import URI
 
 /// Provides a RedisCache object to Vapor
 /// when added to a Droplet.
@@ -58,7 +59,26 @@ extension RedisCache: ConfigInitializable {
         }
     }
     
+    //accepts a heroku redis connection string in the format of:
+    // redis://h:PASSWORD@URL:PORT
     public convenience init(url: String, encoding: String?) throws {
+        let split = url.components(separatedBy: "@")
+        let secondHalf = split[1].components(separatedBy: ":")
         
+        var splitPassword: String? = split[0].replacingOccurrences(of: "redis://h:", with: "")
+        if splitPassword == "" {
+            splitPassword = nil
+        }
+        
+        let host = secondHalf[0]
+        guard let port = Int(secondHalf[1]) else {
+            throw ConfigError.unsupported(value: secondHalf[1], key: ["port"], file: "redis")
+        }
+        
+        try self.init(
+            hostname: host,
+            port: Port(port),
+            password: splitPassword
+        )
     }
 }
