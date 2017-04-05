@@ -25,9 +25,7 @@ extension RedisCache: ConfigInitializable {
         if let url = redis["url"]?.string {
             try self.init(url: url, encoding: encoding)
             
-            if let database = redis["database"]?.int {
-                try makeClient().command(try Command("database"), [database.description])
-            }
+            try makeClientDatabase(redis: redis)
         } else {
             guard let hostname = redis["hostname"]?.string else {
                 throw ConfigError.missing(
@@ -53,9 +51,13 @@ extension RedisCache: ConfigInitializable {
                 password: password
             )
             
-            if let database = redis["database"]?.int {
-                try makeClient().command(try Command("database"), [database.description])
-            }
+            try makeClientDatabase(redis: redis)
+        }
+    }
+    
+    private func makeClientDatabase(redis: [String: Config]) throws {
+        if let database = redis["database"]?.int {
+            try makeClient().command(try Command("database"), [database.description])
         }
     }
     
