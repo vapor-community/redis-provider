@@ -8,18 +8,17 @@ dist: trusty
 group: edge
 osx_image: xcode8.3
 
-services:
-    - redis-server
-
 before_install:
     - if [ $TRAVIS_OS_NAME == "osx" ]; then
             brew tap vapor/tap;
             brew update;
-            brew install vapor;
+            brew install vapor redis;
+            brew services start redis;
         else
             eval "$(curl -sL https://apt.vapor.sh)";
-            sudo apt-get install vapor;
+            sudo apt-get install vapor redis-server;
             sudo chmod -R a+rx /usr/;
+            sudo service redis-server start;
         fi
 
 script:
