@@ -64,23 +64,18 @@ extension RedisCache: ConfigInitializable {
     //accepts a heroku redis connection string in the format of:
     //redis://h:PASSWORD@URL:PORT
     public convenience init(url: String, encoding: String?) throws {
-        let split = url.components(separatedBy: "@")
-        let secondHalf = split[1].components(separatedBy: ":")
+        let uri = try URI(url)
         
-        var splitPassword: String? = split[0].replacingOccurrences(of: "redis://h:", with: "")
-        if splitPassword == "" {
-            splitPassword = nil
-        }
-        
-        let host = secondHalf[0]
-        guard let port = Int(secondHalf[1]) else {
-            throw ConfigError.unsupported(value: secondHalf[1], key: ["port"], file: "redis")
+        let host = uri.hostname
+        let password = uri.userInfo?.info
+        guard let port = uri.port else {
+            throw ConfigError.missing(key: ["password"], file: "redis", desiredType: String.self)
         }
         
         try self.init(
             hostname: host,
             port: Port(port),
-            password: splitPassword
+            password: password
         )
     }
 }
