@@ -60,7 +60,7 @@ extension RedisCache: ConfigInitializable {
     }
     
     //accepts a heroku redis connection string in the format of:
-    // redis://h:PASSWORD@URL:PORT
+    //redis://h:PASSWORD@URL:PORT
     public convenience init(url: String, encoding: String?) throws {
         let split = url.components(separatedBy: "@")
         let secondHalf = split[1].components(separatedBy: ":")
