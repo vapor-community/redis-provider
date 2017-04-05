@@ -5,6 +5,7 @@ language: generic
 sudo: required
 
 dist: trusty
+group: edge
 osx_image: xcode8.3
 
 services:
