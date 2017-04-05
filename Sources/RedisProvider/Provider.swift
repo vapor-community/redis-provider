@@ -18,33 +18,47 @@ extension RedisCache: ConfigInitializable {
         guard let redis = config["redis"]?.object else {
             throw ConfigError.missingFile("redis")
         }
-
-        guard let hostname = redis["hostname"]?.string else {
-            throw ConfigError.missing(
-                key: ["hostname"],
-                file: "redis",
-                desiredType: String.self
-            )
-        }
-
-        guard let port = redis["port"]?.int?.port else {
-            throw ConfigError.missing(
-                key: ["port"],
-                file: "redis",
-                desiredType: Port.self
-            )
-        }
-
-        let password = redis["password"]?.string
-
-        try self.init(
-            hostname: hostname,
-            port: port,
-            password: password
-        )
         
-        if let database = redis["database"]?.int {
-            try makeClient().command(try Command("database"), [database.description])
+        let encoding = redis["encoding"]?.string
+        
+        if let url = redis["url"]?.string {
+            try self.init(url: url, encoding: encoding)
+            
+            if let database = redis["database"]?.int {
+                try makeClient().command(try Command("database"), [database.description])
+            }
+        } else {
+            guard let hostname = redis["hostname"]?.string else {
+                throw ConfigError.missing(
+                    key: ["hostname"],
+                    file: "redis",
+                    desiredType: String.self
+                )
+            }
+            
+            guard let port = redis["port"]?.int?.port else {
+                throw ConfigError.missing(
+                    key: ["port"],
+                    file: "redis",
+                    desiredType: Port.self
+                )
+            }
+            
+            let password = redis["password"]?.string
+            
+            try self.init(
+                hostname: hostname,
+                port: port,
+                password: password
+            )
+            
+            if let database = redis["database"]?.int {
+                try makeClient().command(try Command("database"), [database.description])
+            }
         }
+    }
+    
+    public convenience init(url: String, encoding: String?) throws {
+        
     }
 }
