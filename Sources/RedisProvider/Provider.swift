@@ -69,7 +69,7 @@ extension RedisCache: ConfigInitializable {
         let host = uri.hostname
         let password = uri.userInfo?.info
         guard let port = uri.port else {
-            throw ConfigError.missing(key: ["password"], file: "redis", desiredType: String.self)
+            throw ConfigError.missing(key: ["port"], file: "redis", desiredType: String.self)
         }
         
         try self.init(
