@@ -18,7 +18,6 @@ before_install:
             eval "$(curl -sL https://apt.vapor.sh)";
             sudo apt-get install vapor redis-server;
             sudo chmod -R a+rx /usr/;
-            sudo service redis-server start;
         fi
 
 script:
