@@ -1,6 +1,6 @@
 test:
   override:
-    - eval "$(curl -sL swift.vapor.sh/ci)"
+    - eval "$(curl -sL swift.vapor.sh/ci-3.1)"
 machine:
   services:
     - redis

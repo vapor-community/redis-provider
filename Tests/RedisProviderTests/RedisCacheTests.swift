@@ -1,5 +1,5 @@
 import XCTest
-@testable import VaporRedis
+@testable import RedisProvider
 @testable import Node
 
 class RedisCacheTests: XCTestCase {
@@ -8,7 +8,8 @@ class RedisCacheTests: XCTestCase {
         ("testMissing", testMissing),
         ("testArray", testArray),
         ("testObject", testObject),
-        ("testDelete", testDelete)
+        ("testDelete", testDelete),
+        ("testExpire", testExpire)
     ]
 
     var cache: RedisCache!
@@ -41,7 +42,7 @@ class RedisCacheTests: XCTestCase {
             "key1": "value1"
         ]))
         
-        let node = try cache.get("object")?.node
+        let node = try cache.get("object")
         let value0: String = (node?["key0"]?.string) ?? "wrong"
         let value1: String = (node?["key1"]?.string) ?? "wrong"
         
@@ -50,9 +51,16 @@ class RedisCacheTests: XCTestCase {
     }
 
     func testDelete() throws {
-        try cache.set("ephemeral", 42)
+        try cache.set("hello", 42)
+        XCTAssertEqual(try cache.get("hello")?.string, "42")
+        try cache.delete("hello")
+        XCTAssertEqual(try cache.get("hello"), nil)
+    }
+    
+    func testExpire() throws {
+        try cache.set("ephemeral", 42, expiration: Date(timeIntervalSinceNow: 2))
         XCTAssertEqual(try cache.get("ephemeral")?.string, "42")
-        try cache.delete("ephemeral")
+        sleep(3)
         XCTAssertEqual(try cache.get("ephemeral"), nil)
     }
 }
