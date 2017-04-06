@@ -59,8 +59,18 @@ extension RedisCache: ConfigInitializable {
         if let database = redis["database"]?.int {
             try makeClient().command(try Command("database"), [database.description])
         }
+      
+        let password = redis["password"]?.string
+        let database = redis["database"]?.int
+        
+        try self.init(
+            hostname: hostname,
+            port: port,
+            password: password,
+            database: database
+        )
     }
-    
+  
     //accepts a heroku redis connection string in the format of:
     //redis://h:PASSWORD@URL:PORT
     public convenience init(url: String, encoding: String?) throws {
@@ -71,11 +81,13 @@ extension RedisCache: ConfigInitializable {
         guard let port = uri.port else {
             throw ConfigError.missing(key: ["port"], file: "redis", desiredType: Port.self)
         }
+        let database = Int(uri.path)
         
         try self.init(
             hostname: host,
             port: Port(port),
-            password: password
+            password: password,
+            database: database
         )
     }
 }
