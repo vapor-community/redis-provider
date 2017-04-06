@@ -1,65 +1,20 @@
-# Redis Provider for Vapor
-
-![Swift](http://img.shields.io/badge/swift-v3.1-brightgreen.svg)
-[![Build Status](https://travis-ci.org/vapor/redis-provider.svg?branch=master)](https://travis-ci.org/vapor/redis-provider)
-[![CircleCI](https://circleci.com/gh/vapor/redis-provider.svg?style=shield)](https://circleci.com/gh/vapor/redis-provider)
-[![Code Coverage](https://codecov.io/gh/vapor/redis-provider/branch/master/graph/badge.svg)](https://codecov.io/gh/vapor/redis-provider)
-[![Codebeat](https://codebeat.co/badges/a793ad97-47e3-40d9-82cf-2aafc516ef4e)](https://codebeat.co/projects/github-com-vapor-redis-provider)
-[![Slack Status](http://vapor.team/badge.svg)](http://vapor.team)
-
-A Vapor provider for Redis database caching. 
-
-Read more about [Providers](https://vapor.github.io/documentation/guide/provider.html) in Vapor's [documentation](http://docs.vapor.codes).
-
-## 🐦 Redbird
-
-This wrapper conforms Redbird to Vapor's `CacheProtocol`.
-
-## Installing Redis
-
-### Homebrew
-
-```sh
-brew install redis
-brew services start redis
-```
-
-### Setup
-Add config
-```
-{
-    "address": "127.0.0.1",
-    "port": "6379"
-}
-```
-If password is required, then add "password": "secret" to the config
-
-Add the provider
-```
-try drop.addProvider(VaporRedis.Provider(config: drop.config))
-```
-
-### Usage
-```
-try drop.cache.set("cacheKey", Node("test"))
-print(try drop.cache.get("cacheKey")) // Will print "test"
-```
-### Travis
-
-Travis builds Swift VaporRedis on both Ubuntu 14.04 and macOS 10.11. Check out the `.travis.yml` file to see how this package is built and compiled during testing.
-
-## 📖 Documentation
-
-Visit the Vapor web framework's [documentation](http://docs.vapor.codes) for instructions on how to install Swift 3. 
-
-## 💧 Community
-
-We pride ourselves on providing a diverse and welcoming community. Join your fellow Vapor developers in [our slack](http://vapor.team) and take part in the conversation.
-
-## 🔧 Compatibility
-
-Node has been tested on OS X 10.11, Ubuntu 14.04, and Ubuntu 15.10.
-
-## 👥 Author
-
-Created by [Tanner Nelson](https://github.com/tannernelson).
+<p align="center">
+    <img src="https://cloud.githubusercontent.com/assets/1342803/24749471/78bc8006-1ac3-11e7-969b-110a5d08f3ea.png" width="320" alt="Redis Provider">
+    <br>
+    <br>
+    <a href="http://beta.docs.vapor.codes/redis/package/">
+        <img src="http://img.shields.io/badge/read_the-docs-92A8D1.svg" alt="Documentation">
+    </a>
+    <a href="http://vapor.team">
+        <img src="http://vapor.team/badge.svg" alt="Slack Team">
+    </a>
+    <a href="LICENSE">
+        <img src="http://img.shields.io/badge/license-MIT-brightgreen.svg" alt="MIT License">
+    </a>
+    <a href="https://circleci.com/gh/vapor/redis-provider">
+        <img src="https://circleci.com/gh/vapor/redis-provider.svg?style=shield" alt="Continuous Integration">
+    </a>
+    <a href="https://swift.org">
+        <img src="http://img.shields.io/badge/swift-3.1-brightgreen.svg" alt="Swift 3.1">
+    </a>
+</center>

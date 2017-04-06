@@ -25,11 +25,10 @@ public final class RedisCache: CacheProtocol {
                 password: password
             )
             
-            guard let database = database else {
-                return client
+            if let database = database {
+                try client.command(try Command("select"), [database.description])
             }
             
-            try client.command(try Command("select"), [database.description])
             return client
         }
     }
