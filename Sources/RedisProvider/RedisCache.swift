@@ -17,13 +17,20 @@ public final class RedisCache: CacheProtocol {
     /// port, and password credentials.
     ///
     /// Password should be nil if not required.
-    public convenience init(hostname: String, port: Port, password: String? = nil) throws {
+    public convenience init(hostname: String, port: Port, password: String? = nil, database: Int? = nil) throws {
         self.init {
-            return try Client(
+            let client = try Client(
                 hostname: hostname,
                 port: port,
                 password: password
             )
+            
+            guard let database = database else {
+                return client
+            }
+            
+            try client.command(try Command("select"), [database.description])
+            return client
         }
     }
     

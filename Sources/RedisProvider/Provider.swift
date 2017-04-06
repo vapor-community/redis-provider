@@ -36,15 +36,13 @@ extension RedisCache: ConfigInitializable {
         }
 
         let password = redis["password"]?.string
-
+        let database = redis["database"]?.int
+        
         try self.init(
             hostname: hostname,
             port: port,
-            password: password
+            password: password,
+            database: database
         )
-        
-        if let database = redis["database"]?.int {
-            try makeClient().command(try Command("database"), [database.description])
-        }
     }
 }
