@@ -20,12 +20,9 @@ extension RedisCache: ConfigInitializable {
             throw ConfigError.missingFile("redis")
         }
         
-        let encoding = redis["encoding"]?.string
-        
         if let url = redis["url"]?.string {
+            let encoding = redis["encoding"]?.string
             try self.init(url: url, encoding: encoding)
-            
-            try makeClientDatabase(redis: redis)
         } else {
             guard let hostname = redis["hostname"]?.string else {
                 throw ConfigError.missing(
@@ -44,44 +41,33 @@ extension RedisCache: ConfigInitializable {
             }
             
             let password = redis["password"]?.string
+            let database = redis["database"]?.int
             
             try self.init(
                 hostname: hostname,
                 port: port,
-                password: password
+                password: password,
+                database: database
             )
-            
-            try makeClientDatabase(redis: redis)
         }
     }
     
-    private func makeClientDatabase(redis: [String: Config]) throws {
-        if let database = redis["database"]?.int {
-            try makeClient().command(try Command("database"), [database.description])
-        }
-      
-        let password = redis["password"]?.string
-        let database = redis["database"]?.int
-        
-        try self.init(
-            hostname: hostname,
-            port: port,
-            password: password,
-            database: database
-        )
-    }
-  
     //accepts a heroku redis connection string in the format of:
-    //redis://h:PASSWORD@URL:PORT
+    //redis://user:password@hostname:port/database
     public convenience init(url: String, encoding: String?) throws {
         let uri = try URI(url)
+        
+        guard uri.scheme == "redis" else {
+            throw ConfigError.missing(key: ["url"], file: "redis", desiredType: String.self)
+        }
         
         let host = uri.hostname
         let password = uri.userInfo?.info
         guard let port = uri.port else {
-            throw ConfigError.missing(key: ["port"], file: "redis", desiredType: Port.self)
+            throw ConfigError.missing(key: ["url.port"], file: "redis", desiredType: Port.self)
         }
-        let database = Int(uri.path)
+        
+        let database = Int(uri.path.components(separatedBy: "/").last ?? "")
         
         try self.init(
             hostname: host,

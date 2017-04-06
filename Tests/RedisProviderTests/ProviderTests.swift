@@ -60,6 +60,17 @@ class ProviderTests: XCTestCase {
         XCTAssert(drop.cache is MemoryCache)
     }
     
+    func testUrlConfig() throws {
+        var config = Config([:])
+        try config.set("droplet.cache", "redis")
+        try config.set("redis.url", "redis://:password@\(RedisCache.testAddress):\(RedisCache.testPort)/2")
+        
+        let drop = try Droplet(config: config)
+        try drop.addProvider(RedisProvider.Provider.self)
+        
+        XCTAssert(drop.cache is RedisCache)
+    }
+    
     func testDatabaseSelect() throws {
         var config = Config([:])
         try config.set("droplet.cache", "redis")
