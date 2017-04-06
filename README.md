@@ -1,7 +1,7 @@
 # Redis Provider for Vapor
 
-![Swift](http://img.shields.io/badge/swift-v3.0--dev.07.25-brightgreen.svg)
-[![Build Status](https://travis-ci.org/qutheory/redis-provider.svg?branch=master)](https://travis-ci.org/vapor/redis-provider)
+![Swift](http://img.shields.io/badge/swift-v3.1-brightgreen.svg)
+[![Build Status](https://travis-ci.org/vapor/redis-provider.svg?branch=master)](https://travis-ci.org/vapor/redis-provider)
 [![CircleCI](https://circleci.com/gh/vapor/redis-provider.svg?style=shield)](https://circleci.com/gh/vapor/redis-provider)
 [![Code Coverage](https://codecov.io/gh/vapor/redis-provider/branch/master/graph/badge.svg)](https://codecov.io/gh/vapor/redis-provider)
 [![Codebeat](https://codebeat.co/badges/a793ad97-47e3-40d9-82cf-2aafc516ef4e)](https://codebeat.co/projects/github-com-vapor-redis-provider)
