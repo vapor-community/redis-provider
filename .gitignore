@@ -5,3 +5,4 @@
 *.rdb
 .swift-version
 
+Package.pins
