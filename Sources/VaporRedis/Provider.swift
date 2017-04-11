@@ -1,6 +1,7 @@
 import Vapor
 import Redbird
 import Foundation
+import URI
 
 /**
     Provides a RedisCache object to Vapor
@@ -33,6 +34,11 @@ public final class Provider: Vapor.Provider {
             throw Error.invalidRedisConfig("No redis.json file.")
         }
 
+        if let urlString = redis["url"]?.string {
+            try self.init(url: urlString)
+            return
+        }
+
         guard let address = redis["address"]?.string else {
             throw Error.invalidRedisConfig("No address.")
         }
@@ -44,6 +50,11 @@ public final class Provider: Vapor.Provider {
         let password = redis["password"]?.string
 
         try self.init(address: address, port: port, password: password)
+    }
+
+    public convenience init(url: String) throws {
+        let uri = try URIParser.parse(bytes: url.bytes)
+        try self.init(address: uri.host, port: uri.port ?? 6379, password: uri.userInfo?.info)
     }
 
     public func boot(_ droplet: Droplet) {
