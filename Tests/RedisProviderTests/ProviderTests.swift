@@ -5,32 +5,19 @@ import Cache
 
 class ProviderTests: XCTestCase {
     static let allTests = [
-        ("testManual", testManual),
         ("testConfig", testConfig),
         ("testConfigMissing", testConfigMissing),
         ("testNotConfigured", testNotConfigured),
         ("testDatabaseSelect", testDatabaseSelect)
     ]
 
-    func testManual() throws {
-        let drop = try Droplet()
-
-        drop.cache = try RedisCache(
-            hostname: RedisCache.testAddress,
-            port: RedisCache.testPort
-        )
-
-        XCTAssert(drop.cache is RedisCache)
-    }
-
     func testConfig() throws {
         var config = Config([:])
         try config.set("droplet.cache", "redis")
         try config.set("redis.hostname", RedisCache.testAddress)
         try config.set("redis.port", RedisCache.testPort)
-
+        try config.addProvider(RedisProvider.Provider.self)
         let drop = try Droplet(config: config)
-        try drop.addProvider(RedisProvider.Provider.self)
 
         XCTAssert(drop.cache is RedisCache)
     }
@@ -38,10 +25,10 @@ class ProviderTests: XCTestCase {
     func testConfigMissing() throws {
         var config = Config([:])
         try config.set("droplet.cache", "redis")
-
-        let drop = try Droplet(config: config)
+        try config.addProvider(RedisProvider.Provider.self)
+        
         do {
-            try drop.addProvider(RedisProvider.Provider.self)
+            _ = try Droplet(config)
             XCTFail("Should have failed.")
         } catch ConfigError.missingFile(let file) {
             XCTAssertEqual(file, "redis")
@@ -53,9 +40,9 @@ class ProviderTests: XCTestCase {
     func testNotConfigured() throws {
         var config = Config([:])
         try config.set("droplet.cache", "memory")
+        try config.addProvider(RedisProvider.Provider.self)
 
         let drop = try Droplet(config: config)
-        try drop.addProvider(RedisProvider.Provider.self)
 
         XCTAssert(drop.cache is MemoryCache)
     }
@@ -64,9 +51,9 @@ class ProviderTests: XCTestCase {
         var config = Config([:])
         try config.set("droplet.cache", "redis")
         try config.set("redis.url", "redis://:password@\(RedisCache.testAddress):\(RedisCache.testPort)/2")
+        try config.addProvider(RedisProvider.Provider.self)
         
         let drop = try Droplet(config: config)
-        try drop.addProvider(RedisProvider.Provider.self)
         
         XCTAssert(drop.cache is RedisCache)
     }
@@ -77,9 +64,9 @@ class ProviderTests: XCTestCase {
         try config.set("redis.hostname", RedisCache.testAddress)
         try config.set("redis.port", RedisCache.testPort)
         try config.set("redis.database", 2)
+        try config.addProvider(RedisProvider.Provider.self)
         
         let drop = try Droplet(config: config)
-        try drop.addProvider(RedisProvider.Provider.self)
 
         let key = UUID().uuidString
         try drop.cache.set(key, "bar")
