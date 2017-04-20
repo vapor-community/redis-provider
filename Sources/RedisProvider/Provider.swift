@@ -5,13 +5,17 @@ import URI
 /// Provides a RedisCache object to Vapor
 /// when added to a Droplet.
 public final class Provider: Vapor.Provider {
-    public init(config: Config) throws {}
-
-    public func boot(_ drop: Droplet) throws {
-        try drop.addConfigurable(cache: RedisCache.self, name: "redis")
+    public static let repositoryName = "redis-provider"
+    
+    public init(config: Config) throws { }
+    
+    public func boot(_ config: Config) throws {
+        config.addConfigurable(cache: RedisCache.init, name: "redis")
     }
 
-    public func beforeRun(_: Droplet) throws {}
+    public func boot(_ drop: Droplet) throws { }
+
+    public func beforeRun(_: Droplet) throws { }
 }
 
 extension RedisCache: ConfigInitializable {
