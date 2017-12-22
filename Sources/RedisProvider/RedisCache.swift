@@ -3,6 +3,7 @@ import Node
 import JSON
 import Core
 import Transport
+import class Sockets.TCPInternetSocket
 
 public struct RedisContext: Context {}
 
@@ -19,7 +20,7 @@ public final class RedisCache: CacheProtocol {
     /// Password should be nil if not required.
     public convenience init(hostname: String, port: Port, password: String? = nil, database: Int? = nil) throws {
         self.init {
-            let client = try Client(
+            let client: Client<TCPInternetSocket> = try Client(
                 hostname: hostname,
                 port: port,
                 password: password
