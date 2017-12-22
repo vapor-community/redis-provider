@@ -19,7 +19,7 @@ public final class RedisCache: CacheProtocol {
     /// Password should be nil if not required.
     public convenience init(hostname: String, port: Port, password: String? = nil, database: Int? = nil) throws {
         self.init {
-            let client = try Client(
+            let client = try TCPClient(
                 hostname: hostname,
                 port: port,
                 password: password
