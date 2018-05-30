@@ -40,7 +40,7 @@ class RedisCacheTests: XCTestCase {
     func testBytes() throws {
         try cache.set("bytes", Node(bytes: [1, 2, 3]))
 
-        let bytes = try cache.get("bytes")?.bytes
+        let bytes: Bytes = try cache.get("bytes")?.bytes ?? []
 
         XCTAssertEqual(bytes, [1, 2, 3])
     }
