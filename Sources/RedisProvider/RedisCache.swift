@@ -67,6 +67,8 @@ public final class RedisCache: CacheProtocol {
         switch value.wrapped {
         case .string(let s):
             serialized = s.makeBytes()
+        case .bytes(let b):
+            serialized = b
         default:
             serialized = try JSON(value).serialize()
         }

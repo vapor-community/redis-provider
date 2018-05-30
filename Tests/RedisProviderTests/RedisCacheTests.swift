@@ -7,6 +7,7 @@ class RedisCacheTests: XCTestCase {
         ("testBasic", testBasic),
         ("testMissing", testMissing),
         ("testArray", testArray),
+        ("testBytes", testBytes),
         ("testObject", testObject),
         ("testDelete", testDelete),
         ("testExpire", testExpire)
@@ -34,6 +35,14 @@ class RedisCacheTests: XCTestCase {
         let value: Int = (array?[0].int) ?? 0
         
         XCTAssertEqual(value, 1)
+    }
+
+    func testBytes() throws {
+        try cache.set("bytes", Node(bytes: [1, 2, 3]))
+
+        let bytes = try cache.get("bytes")?.bytes
+
+        XCTAssertEqual(bytes, [1, 2, 3])
     }
     
     func testObject() throws {
